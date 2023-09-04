@@ -4,6 +4,10 @@ registerButton.addEventListener('click', addUser)
 const password2 = document.getElementById('password2')
 password2.addEventListener('input', checkPasswords)
 
+document.getElementById('signIn').addEventListener('click', () => {
+    window.location.href = "./signIn.html"
+})
+
 
 async function checkPasswords(req, res) {
     const password = document.getElementById('password')
@@ -15,7 +19,7 @@ async function checkPasswords(req, res) {
         document.getElementById('errMessage').innerHTML = ""
         password.style.borderColor = "black"
         password2.style.borderColor = "black"
-        registerButton.className = "btn btn-primary btn-lg"
+        registerButton.className = "btn btn-success btn-lg"
     }
 }
 
