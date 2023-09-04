@@ -12,10 +12,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.signUpUser = void 0;
+exports.signInUser = exports.signUpUser = void 0;
 const User_1 = __importDefault(require("../Models/User"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const database_1 = __importDefault(require("../utils/database"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+function generateAccessToken(id, name) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return jsonwebtoken_1.default.sign({ userId: id, name: name }, "secretkey");
+    });
+}
 const signUpUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const t = yield database_1.default.transaction();
     try {
@@ -38,3 +44,36 @@ const signUpUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.signUpUser = signUpUser;
+const signInUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const email = req.body.email;
+    const password = req.body.password;
+    try {
+        const user = yield User_1.default.findAll({
+            where: {
+                email: email,
+            },
+        });
+        if (user.length > 0) {
+            const data = user[0].dataValues;
+            bcrypt_1.default.compare(password, data.password, (err, result) => {
+                if (result) {
+                    const token = generateAccessToken(data.id, data.name);
+                    res.status(200).json({ success: true, token: token, message: 'Authentication Successful' });
+                }
+                else if (!result) {
+                    res.status(401).json({ message: "Incorrect Password", err: 'psk' });
+                }
+                else {
+                    throw new Error("An Error Occured");
+                }
+            });
+        }
+        else {
+            res.status(404).json({ message: "User Not Found", err: 'NF' });
+        }
+    }
+    catch (err) {
+        console.log(err);
+    }
+});
+exports.signInUser = signInUser;

@@ -4,6 +4,7 @@ const signInButton = document.getElementById('signIn')
 signInButton.addEventListener('click', login)
 const message = document.getElementById('errMessage')
 
+
 document.getElementById('signUp').addEventListener('click', () => {
     window.location.href = "./signUp.html"
 })
@@ -13,15 +14,27 @@ async function login(){
     const password = document.getElementById('password')
     
     const myObj = {
-        email,
-        password
+        email : email.value,
+        password : password.value
     }
 
     try{
         const response = await axios.post(`${backendAPI}/user/signIn`, myObj)
-        console.log(response)
+        if(response.status === 200 && response.data.success){
+            message.style.color = 'green'
+            message.innerHTML = response.data.message
+        }
     }catch(err){
         console.log(err)
+        if(err.status === 401){
+            email.style.borderColor = 'red'
+            message.style.color = 'red'
+            message.innerHTML = err.response.data.message
+        }else{
+            password.style.borderColor = "red"
+            message.style.color = 'red'
+            message.innerHTML = err.response.data.message
+        }
     }
 
 }
