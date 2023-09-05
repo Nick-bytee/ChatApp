@@ -12,6 +12,7 @@ const User = database_1.default.define('user', {
         allowNull: false,
         primaryKey: true
     },
+    name: sequelize_1.default.STRING,
     email: {
         type: sequelize_1.default.STRING,
         allowNull: false,

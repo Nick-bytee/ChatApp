@@ -15,12 +15,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.storeChat = exports.getAllChat = void 0;
 const database_1 = __importDefault(require("../utils/database"));
 const chat_1 = __importDefault(require("../Models/chat"));
+const User_1 = __importDefault(require("../Models/User"));
 const getAllChat = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const chat = yield chat_1.default.findAll({
-            raw: true
+            include: [{
+                    model: User_1.default,
+                    attributes: ['name']
+                }],
+            raw: true,
         });
         console.log(chat);
+        res.status(200).json({ success: true });
     }
     catch (err) {
         console.log(err);

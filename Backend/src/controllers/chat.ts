@@ -1,6 +1,7 @@
 import { Request, Response } from "express"
 import sequelize from "../utils/database"
 import Chat from "../Models/chat"
+import User from "../Models/User"
 
 interface CustomRequest extends Request {
     user?: any
@@ -9,9 +10,14 @@ interface CustomRequest extends Request {
 export const getAllChat = async(req : Request, res: Response) => {
     try{
         const chat = await Chat.findAll({
-            raw : true
+            include : [{
+                model : User,
+                attributes : ['name']
+            }],
+            raw : true,
         })
         console.log(chat)
+        res.status(200).json({success : true})
     }catch(err){
         console.log(err)
     }

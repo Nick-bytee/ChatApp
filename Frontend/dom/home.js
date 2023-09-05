@@ -8,6 +8,7 @@ const backendAPI = "http://localhost:3000"
 
 
 window.addEventListener('DOMContentLoaded', getData)
+
 async function getData(){
     try{
         const data = await axios.get(`${backendAPI}/chat/home`)
@@ -38,3 +39,7 @@ async function sendMessage(e){
     }
     
 }
+
+const interval = setInterval(getData, 1000)
+
+clearInterval(interval)
