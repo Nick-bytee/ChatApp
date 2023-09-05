@@ -11,7 +11,7 @@ const Chat = database_1.default.define('chats', {
         allowNull: false,
         primaryKey: true,
         autoIncrement: true
-    }, userId: sequelize_1.default.INTEGER,
+    },
     message: sequelize_1.default.STRING
 });
 exports.default = Chat;

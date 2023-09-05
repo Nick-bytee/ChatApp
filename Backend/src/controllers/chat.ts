@@ -1,24 +1,28 @@
 import { Request, Response } from "express"
-import Chat from "../Models/chat"
 import sequelize from "../utils/database"
+import Chat from "../Models/chat"
 
 interface CustomRequest extends Request {
     user?: any
 }
 
 export const getAllChat = async(req : Request, res: Response) => {
-
-    const chat = null
+    try{
+        const chat = await Chat.findAll({
+            raw : true
+        })
+        console.log(chat)
+    }catch(err){
+        console.log(err)
+    }
 
 }
 
 export const storeChat = async(req : CustomRequest, res: Response)=> {
     const t = sequelize.transaction()
     const message = req.body.message
-    const user = req.user.dataValues
     try{
-        await Chat.create({
-            userId : user.id,
+        req.user.createChat({
             message : message
         })
         res.status(200).json({success : true})

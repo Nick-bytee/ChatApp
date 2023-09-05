@@ -13,19 +13,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.storeChat = exports.getAllChat = void 0;
-const chat_1 = __importDefault(require("../Models/chat"));
 const database_1 = __importDefault(require("../utils/database"));
+const chat_1 = __importDefault(require("../Models/chat"));
 const getAllChat = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const chat = null;
+    try {
+        const chat = yield chat_1.default.findAll({
+            raw: true
+        });
+        console.log(chat);
+    }
+    catch (err) {
+        console.log(err);
+    }
 });
 exports.getAllChat = getAllChat;
 const storeChat = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const t = database_1.default.transaction();
     const message = req.body.message;
-    const user = req.user.dataValues;
     try {
-        yield chat_1.default.create({
-            userId: user.id,
+        req.user.createChat({
             message: message
         });
         res.status(200).json({ success: true });

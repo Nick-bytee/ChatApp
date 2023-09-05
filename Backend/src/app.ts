@@ -7,7 +7,11 @@ import sequelize from "./utils/database";
 const app = express()
 const Port = 3000
 
+import User from "./Models/User";
+import Chat from "./Models/chat";
 
+Chat.belongsTo(User)
+User.hasMany(Chat)
 
 //routes
 import userRoutes from "./routes/user"
