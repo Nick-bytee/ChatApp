@@ -17,11 +17,6 @@ const User_1 = __importDefault(require("../Models/User"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const database_1 = __importDefault(require("../utils/database"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-function generateAccessToken(id, name) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return jsonwebtoken_1.default.sign({ userId: id, name: name }, "secretkey");
-    });
-}
 const signUpUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const t = yield database_1.default.transaction();
     try {
@@ -57,8 +52,14 @@ const signInUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             const data = user[0].dataValues;
             bcrypt_1.default.compare(password, data.password, (err, result) => {
                 if (result) {
-                    const token = generateAccessToken(data.id, data.name);
-                    res.status(200).json({ success: true, token: token, message: 'Authentication Successful' });
+                    const token = jsonwebtoken_1.default.sign({ userId: data.id, name: data.name }, 'secretkey', { expiresIn: '1h' }, function (err, token) {
+                        if (!err) {
+                            res.status(200).json({ success: true, token: token, message: 'Authentication Successful' });
+                        }
+                        else {
+                            throw new Error('Internal Server Error');
+                        }
+                    });
                 }
                 else if (!result) {
                     res.status(401).json({ message: "Incorrect Password", err: 'psk' });

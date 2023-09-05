@@ -23,6 +23,9 @@ async function login(){
         if(response.status === 200 && response.data.success){
             message.style.color = 'green'
             message.innerHTML = response.data.message
+            console.log(response.data)
+            localStorage.setItem('token', response.data.token)
+            window.location.href = './home.html'
         }
     }catch(err){
         console.log(err)
