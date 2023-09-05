@@ -11,9 +11,11 @@ const app = (0, express_1.default)();
 const Port = 3000;
 //routes
 const user_1 = __importDefault(require("./routes/user"));
+const chat_1 = __importDefault(require("./routes/chat"));
 app.use(body_parser_1.default.json());
 app.use((0, cors_1.default)());
 app.use('/user', user_1.default);
+app.use('/chat', chat_1.default);
 database_1.default.sync().then(() => {
     app.listen(Port, () => {
         console.log(`Server is Running on ${Port}`);

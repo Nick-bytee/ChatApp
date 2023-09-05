@@ -11,9 +11,12 @@ const Port = 3000
 
 //routes
 import userRoutes from "./routes/user"
+import chatRoutes from './routes/chat'
+
 app.use(bodyParser.json())
 app.use(cors())
 app.use('/user', userRoutes)
+app.use('/chat', chatRoutes)
 
 sequelize.sync().then(()=>{
     app.listen(Port, () => {
