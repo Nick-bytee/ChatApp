@@ -16,20 +16,34 @@ exports.storeChat = exports.getAllChat = void 0;
 const database_1 = __importDefault(require("../utils/database"));
 const chat_1 = __importDefault(require("../Models/chat"));
 const User_1 = __importDefault(require("../Models/User"));
+const sequelize_1 = __importDefault(require("sequelize"));
 const getAllChat = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const currentUserId = req.user.id;
+    const latestChatId = req.header('id') || 0;
+    console.log(latestChatId);
     try {
-        const chat = yield chat_1.default.findAll({
+        const userChats = yield chat_1.default.findAll({
+            where: {
+                id: { [sequelize_1.default.Op.gt]: latestChatId }
+            },
             include: [{
                     model: User_1.default,
-                    attributes: ['name']
+                    attributes: ['name'],
                 }],
             raw: true,
         });
-        console.log(chat);
-        res.status(200).json({ success: true });
+        const allChats = userChats.map(chat => ({
+            id: chat.id,
+            message: chat.message,
+            username: chat['user.name'],
+            time: `${new Date(chat.createdAt).getHours()}:${new Date(chat.createdAt).getMinutes()}`,
+            isCurrentUser: chat.userId === currentUserId
+        }));
+        res.status(200).json({ chats: allChats });
     }
     catch (err) {
         console.log(err);
+        res.status(401).json({ message: 'Interal Server Error' });
     }
 });
 exports.getAllChat = getAllChat;

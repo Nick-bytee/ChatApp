@@ -26,7 +26,6 @@ const signUpUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             email: req.body.email,
             password: psk,
         });
-        console.log(user);
         res.status(200).json({ success: true, message: "Registered Successfully" });
         yield t.commit();
     }

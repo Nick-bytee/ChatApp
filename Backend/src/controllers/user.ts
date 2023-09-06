@@ -14,8 +14,6 @@ export const signUpUser = async (req: Request, res: Response) => {
       email: req.body.email,
       password: psk,
     });
-
-    console.log(user);
     res.status(200).json({ success: true, message: "Registered Successfully" });
     await t.commit();
   } catch (err: any) {
