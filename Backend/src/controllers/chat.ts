@@ -3,6 +3,7 @@ import sequelize from "../utils/database"
 import Chat from "../Models/chat"
 import User from "../Models/User"
 import  Sequelize, { where }  from "sequelize"
+import Group from "../Models/group"
 
 interface CustomRequest extends Request {
     user?: any,
@@ -11,7 +12,6 @@ interface CustomRequest extends Request {
 export const getAllChat = async(req : CustomRequest, res: Response) => {
     const currentUserId = req.user.id
     const latestChatId = req.header('id') || 0
-    console.log(latestChatId)
     try{
         const userChats = await Chat.findAll({
             where : {
@@ -42,10 +42,19 @@ export const getAllChat = async(req : CustomRequest, res: Response) => {
 export const storeChat = async(req : CustomRequest, res: Response)=> {
     const t = sequelize.transaction()
     const message = req.body.message
+    const uuid = req.body.id
+    const user = req.user
     try{
-        req.user.createChat({
-            message : message
-        })
+        const group = await Group.findOne({where : {
+            uuid : uuid
+        },raw : true})
+        if(group){
+            const chat = await Chat.create({
+                message : message,
+                userId : user.id,
+                groupId : group.id
+            })
+        }
         res.status(200).json({success : true})
     }catch(err){
         console.log(err)

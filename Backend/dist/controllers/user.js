@@ -51,7 +51,7 @@ const signInUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             const data = user[0].dataValues;
             bcrypt_1.default.compare(password, data.password, (err, result) => {
                 if (result) {
-                    const token = jsonwebtoken_1.default.sign({ userId: data.id, name: data.name }, 'secretkey', { expiresIn: '1h' }, function (err, token) {
+                    const token = jsonwebtoken_1.default.sign({ userId: data.id, name: data.name }, 'secretkey', { expiresIn: '10h' }, function (err, token) {
                         if (!err) {
                             res.status(200).json({ success: true, token: token, message: 'Authentication Successful' });
                         }

@@ -9,8 +9,8 @@ interface CustomRequest extends Request {
 export async function authenticate(req: CustomRequest, res: Response, next: NextFunction) {
   try {
     const token = req.header('Authenticate');
-    console.log('token', token)
     if (!token) {
+      console.log('Token Not Available')
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
@@ -26,7 +26,7 @@ export async function authenticate(req: CustomRequest, res: Response, next: Next
         return res.status(404).json({ message: 'User not found' });
       }
     } else {
-      return res.status(401).json({ message: 'Unauthorized' });
+      throw new Error('Internal Server Error')
     }
   } catch (err) {
     console.error(err);

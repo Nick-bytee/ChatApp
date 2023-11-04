@@ -19,8 +19,8 @@ function authenticate(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const token = req.header('Authenticate');
-            console.log('token', token);
             if (!token) {
+                console.log('Token Not Available');
                 return res.status(401).json({ message: 'Unauthorized' });
             }
             let user;
@@ -36,7 +36,7 @@ function authenticate(req, res, next) {
                 }
             }
             else {
-                return res.status(401).json({ message: 'Unauthorized' });
+                throw new Error('Internal Server Error');
             }
         }
         catch (err) {

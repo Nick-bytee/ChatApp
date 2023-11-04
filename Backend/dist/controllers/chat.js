@@ -17,10 +17,10 @@ const database_1 = __importDefault(require("../utils/database"));
 const chat_1 = __importDefault(require("../Models/chat"));
 const User_1 = __importDefault(require("../Models/User"));
 const sequelize_1 = __importDefault(require("sequelize"));
+const group_1 = __importDefault(require("../Models/group"));
 const getAllChat = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const currentUserId = req.user.id;
     const latestChatId = req.header('id') || 0;
-    console.log(latestChatId);
     try {
         const userChats = yield chat_1.default.findAll({
             where: {
@@ -50,10 +50,19 @@ exports.getAllChat = getAllChat;
 const storeChat = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const t = database_1.default.transaction();
     const message = req.body.message;
+    const uuid = req.body.id;
+    const user = req.user;
     try {
-        req.user.createChat({
-            message: message
-        });
+        const group = yield group_1.default.findOne({ where: {
+                uuid: uuid
+            }, raw: true });
+        if (group) {
+            const chat = yield chat_1.default.create({
+                message: message,
+                userId: user.id,
+                groupId: group.id
+            });
+        }
         res.status(200).json({ success: true });
     }
     catch (err) {

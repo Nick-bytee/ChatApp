@@ -39,7 +39,7 @@ export const signInUser = async(req: Request, res: Response) => {
       const data = user[0].dataValues;
       bcrypt.compare(password, data.password, (err, result) => {
         if (result) {
-          const token = jwt.sign({userId : data.id, name : data.name}, 'secretkey', {expiresIn : '1h'}, function(err, token) {
+          const token = jwt.sign({userId : data.id, name : data.name}, 'secretkey', {expiresIn : '10h'}, function(err, token) {
             if(!err){
               res.status(200).json({ success: true, token: token, message : 'Authentication Successful' });
             }else{
