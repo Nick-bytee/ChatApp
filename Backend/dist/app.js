@@ -12,10 +12,11 @@ const Port = 3000;
 const User_1 = __importDefault(require("./Models/User"));
 const chat_1 = __importDefault(require("./Models/chat"));
 const group_1 = __importDefault(require("./Models/group"));
+const usergroup_1 = __importDefault(require("./Models/usergroup"));
 chat_1.default.belongsTo(User_1.default);
 User_1.default.hasMany(chat_1.default);
-User_1.default.belongsToMany(group_1.default, { through: 'UserGroup' });
-group_1.default.belongsToMany(User_1.default, { through: 'UserGroup' });
+User_1.default.belongsToMany(group_1.default, { through: usergroup_1.default });
+group_1.default.belongsToMany(User_1.default, { through: usergroup_1.default });
 group_1.default.hasMany(chat_1.default, { foreignKey: 'groupId' });
 chat_1.default.belongsTo(group_1.default, { foreignKey: 'groupId' });
 //routes

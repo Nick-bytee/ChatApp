@@ -2,7 +2,7 @@ import { Router } from "express";
 const router = Router()
 
 import authenticate from "../middleware/auth";
-import { createGroup, joinGroup, updateGroupInfo } from "../controllers/group";
+import { addUser, createAdmin, createGroup, joinGroup, removeUser, searchUser, updateGroupInfo } from "../controllers/group";
 import { getGroups } from "../controllers/group";
 import { getGroupChat } from "../controllers/group";
 import { getGroupInfo } from "../controllers/group";
@@ -18,4 +18,13 @@ router.get('/getInfo/:id', authenticate, getGroupInfo)
 router.post('/updateGroupInfo', authenticate, updateGroupInfo)
 
 router.post('/joinGroup', authenticate, joinGroup)
+
+router.put('/updateGroupAdmin', authenticate, createAdmin)
+
+router.delete('/removeUser', authenticate, removeUser)
+
+router.post('/searchUser', authenticate, searchUser)
+
+router.post('/addUser', authenticate, addUser)
+
 export default router

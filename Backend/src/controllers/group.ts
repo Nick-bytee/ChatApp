@@ -1,10 +1,8 @@
 import { Request, Response } from "express";
 import User from "../Models/User";
 import Group from "../Models/group";
-import sequelize from "../utils/database";
-import Chat from "../Models/chat";
 import { v4 as uuidv4 } from "uuid";
-import { Sequelize, where } from "sequelize";
+import userGroup from "../Models/usergroup";
 
 interface customRequest extends Request {
   user?: any;
@@ -20,7 +18,13 @@ export const createGroup = async (req: customRequest, res: Response) => {
       description: groupDescription,
       uuid: uuid,
     });
-    user.addGroup(group);
+    await user.addGroup(group);
+
+    const usergroup = await userGroup.findOne({ where: { userId: user.id, groupId: group.id } })
+    if (usergroup) {
+      await usergroup.update({ isAdmin: true })
+    }
+    console.log(usergroup)
     res.status(200).json({ success: true });
   } catch (err) {
     console.log(err);
@@ -42,7 +46,7 @@ export const getGroups = async (req: customRequest, res: Response) => {
   }
 };
 
-export const storeChat = async (req: customRequest, res: Response) => {};
+export const storeChat = async (req: customRequest, res: Response) => { };
 
 export const getGroupChat = async (req: customRequest, res: Response) => {
   const uuid = req.params.id;
@@ -90,58 +94,168 @@ export const getGroupChat = async (req: customRequest, res: Response) => {
 
 export const getGroupInfo = async (req: customRequest, res: Response) => {
   const uuid = req.params.id
-  try{
+  try {
     const group = await Group.findOne({
       where: {
         uuid: uuid,
       },
-      raw : true,
     } as any);
     if (!group) {
       res.status(200).json("Err Occured");
       return;
     }
-    res.status(200).json(group)
-  }catch(err){
+    const users = await group.getUsers({
+      attributes: ["id", "name", "createdAt"],
+      raw: true,
+    }) as Array<any>;
+    const userData = users.map((user) => ({
+      id: user.id,
+      name: user.name,
+      isCurrentUser: req.user.id === user.id,
+      isAdmin: user["userGroup.isAdmin"]
+    }))
+    res.status(200).json({ group, userData })
+  } catch (err) {
     console.log(err)
   }
 };
 
-export const updateGroupInfo = async(req : customRequest, res : Response) => {
-    try{
-      const group = await Group.update({
-        name : req.body.name,
-        description : req.body.description
-      }, {where : {
-        uuid : req.body.uuid
-      }})
-      res.status(200).json({message : 'success'})
-    }catch(err){
-      console.log(err)
-      res.status(500).json({message : 'Internal Server Error'})
+export const createAdmin = async (req: customRequest, res: Response) => {
+  try {
+    const uuid = req.body.uuid
+    const userId = req.body.userId
+    const group = await Group.findOne({
+      where: {
+        uuid: uuid,
+      },
+    } as any);
+
+    const usergroup = await userGroup.findOne({ where: { userId: userId, groupId: group.id } })
+    if (usergroup) {
+      await usergroup.update({ isAdmin: true })
+      res.status(200).json({ success: true })
+    } else {
+      throw new Error('Internal Server Error')
     }
+  } catch (err: any) {
+    console.log(err)
+    res.status(500).json({ msg: err.message })
+  }
 }
 
-export const joinGroup = async(req : customRequest, res : Response) => {
-  const user = req.user
+export const removeUser = async (req: customRequest, res: Response) => {
+  const uuid = req.query.uuid
+  const userId = req.query.id
+
+  try {
+    const group = await Group.findOne({
+      where: {
+        uuid: uuid
+      }
+    })
+    if (group) {
+    }
+    const user = await User.findOne({
+      where: {
+        id: userId
+      }
+    })
+    if(user && group){
+      // @ts-ignore
+      user.removeGroup(group)
+    }
+    res.status(200).json({message : 'success'})
+  }catch(err) {
+  console.log(err)
+}}
+
+export const searchUser = async (req : customRequest, res : Response)=>{
+  const uuid = req.body.uuid
+  const email = req.body.userData
+  try{
+      const user = await User.findOne({
+        where : {
+          email : email
+      }})  
+      if(user){
+        const userData = {
+          name : user.dataValues.name,
+          email : user.dataValues.email
+        }
+        // @ts-ignore
+        // await user.addGroup(group)
+        res.status(200).json({data : user})
+      }else{
+        throw new Error('User Not Found!')
+      }
+  }catch(err: any){
+    console.log(err)
+    res.status(500).json({message : err.message})
+  }
+}
+
+export const addUser = async (req: customRequest, res: Response) => {
+  const email = req.body.email
+  const uuid = req.body.uuid
   try{
     const group = await Group.findOne({
       where : {
-        uuid : req.body.uuid
+        uuid : uuid
       }
     })
-    if(group) {
+    const user = await User.findOne({
+      where : {
+        email : email
+      }
+    })
+    if(user){
+      //@ts-ignore
+      await user.addGroup(group)
+      res.status(200).json({message : 'success'})
+    }
+  }catch(err){
+    console.log(err)
+    res.status(500).json({message : 'Internal Server Error'})
+  }
+}
+
+export const updateGroupInfo = async (req: customRequest, res: Response) => {
+  try {
+     await Group.update({
+      name: req.body.name,
+      description: req.body.description
+    }, {
+      where: {
+        uuid: req.body.uuid
+      }
+    })
+    res.status(200).json({ message: 'success' })
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ message: 'Internal Server Error' })
+  }
+}
+
+export const joinGroup = async (req: customRequest, res: Response) => {
+  const user = req.user
+  try {
+    const group = await Group.findOne({
+      where: {
+        uuid: req.body.uuid
+      }
+    })
+    if (group) {
       const userGroup = await user.addGroup(group)
-      if(userGroup){
-        res.status(200).json({message : 'Group Joined'})
-      }else{
+      if (userGroup) {
+        res.status(200).json({ message: 'Group Joined' })
+      } else {
         throw new Error('Already in the Group')
       }
-    }else{
-      res.status(500).json({message : 'Group Not Found'})
+    } else {
+      res.status(500).json({ message: 'Group Not Found' })
     }
-  }catch(err : any){
+  } catch (err: any) {
     console.log(err)
-    res.status(500).json({message : err.message})
-  } 
+    res.status(500).json({ message: err.message })
+  }
 }

@@ -15,6 +15,16 @@
     background: #eee;
 }
 
+.my-custom-scrollbar {
+    position: relative;
+    height: 280px;
+    overflow: auto;
+}
+
+.table-wrapper-scroll-y {
+    display: block;
+}
+
 .custom-card {
     min-height: 90vh !important;
     border-radius: 0 !important;
@@ -23,38 +33,42 @@
 .with-border {
     border-bottom: 2px solid #333 !important;
     padding-bottom: 5px !important;
-  }
+}
 
 .search-click {
-  border: 1px solid #ccc;
-  outline: none;
-  background-size: 22px;
-  background-position: 13px;
-  border-radius: 10px;
-  width: 50px;
-  height: 50px;
-  padding: 25px;
-  transition: all 0.5s;
+    border: 1px solid #ccc;
+    outline: none;
+    background-size: 22px;
+    background-position: 13px;
+    border-radius: 10px;
+    width: 50px;
+    height: 50px;
+    padding: 25px;
+    transition: all 0.5s;
 }
+
 .search-click:focus {
-  width: 300px;
-  padding-left: 50px;
+    width: 300px;
+    padding-left: 50px;
 }
+
 .search-click {
-  position: relative;
-  overflow: hidden;
-  height: 50px;
+    position: relative;
+    overflow: hidden;
+    height: 50px;
 }
+
 .search-click input {
-  background: transparent;
-  border: 1px solid #ccc;
-  outline: none;
-  position: absolute;
-  width: 300px;
-  height: 50px;
-  left: 0%;
-  padding: 10px;
+    background: transparent;
+    border: 1px solid #ccc;
+    outline: none;
+    position: absolute;
+    width: 300px;
+    height: 50px;
+    left: 0%;
+    padding: 10px;
 }
+
 /* .search_icon {
     height: 40px;
     width: 40px;
@@ -68,13 +82,13 @@
 } */
 
 
-.group-icon{
+.group-icon {
     height: 40px !important;
     width: 40px !important;
     border-radius: 40px !important;
 }
 
-.navbar{
+.navbar {
     background-color: cornsilk !important;
 }
 
@@ -95,26 +109,26 @@
     margin-top: -.75rem;
 }
 
-.contain{
-    padding : 0 !important;
+.contain {
+    padding: 0 !important;
 }
 
-.custom-container{
+.custom-container {
     display: flex !important;
     padding-left: 10% !important;
 }
 
-.custom-navbar{
+.custom-navbar {
     background-color: white !important;
     padding-top: 0 !important;
 }
 
-.custom-card-header{
+.custom-card-header {
     background-color: white !important;
     border-bottom: 0 !important;
 }
 
-.card-footer{
+.card-footer {
     background-color: cornsilk !important;
 }
 
@@ -124,34 +138,35 @@
     height: 70px;
     font-size: 20px;
     padding-top: 15px;
-    border : 1px;
+    border: 1px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-#heading{
+#heading {
     margin-left: auto;
     flex-grow: 1;
 }
 
-.form-control{
+.form-control {
     margin: 10px;
 }
 
-.menu-button{
-margin: 0;
+.menu-button {
+    margin: 0;
 }
-#search-addon{
+
+#search-addon {
     background-color: white;
 }
 
-#createGroup{
+#createGroup {
     position: relative;
     display: none;
 }
 
-.cut-button{
+.cut-button {
     position: absolute;
     top: 10px !important;
     right: 10px !important;
@@ -159,10 +174,10 @@ margin: 0;
     border: none;
 }
 
-p{
+p {
     text-decoration: none !important;
 }
 
-.groupInfo{
+.groupInfo {
     margin-left: 10px !important;
 }

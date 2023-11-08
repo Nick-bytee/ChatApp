@@ -10,12 +10,13 @@ const Port = 3000
 import User from "./Models/User";
 import Chat from "./Models/chat";
 import Group from "./Models/group";
+import userGroup from "./Models/usergroup";
 
 Chat.belongsTo(User)
 User.hasMany(Chat)
 
-User.belongsToMany(Group, { through: 'UserGroup' });
-Group.belongsToMany(User, { through: 'UserGroup' });
+User.belongsToMany(Group, { through: userGroup });
+Group.belongsToMany(User, { through: userGroup });
 
 Group.hasMany(Chat, { foreignKey: 'groupId' });
 Chat.belongsTo(Group, {foreignKey : 'groupId'})

@@ -16,4 +16,8 @@ router.get('/getChat/:id', auth_1.default, group_3.getGroupChat);
 router.get('/getInfo/:id', auth_1.default, group_4.getGroupInfo);
 router.post('/updateGroupInfo', auth_1.default, group_1.updateGroupInfo);
 router.post('/joinGroup', auth_1.default, group_1.joinGroup);
+router.put('/updateGroupAdmin', auth_1.default, group_1.createAdmin);
+router.delete('/removeUser', auth_1.default, group_1.removeUser);
+router.post('/searchUser', auth_1.default, group_1.searchUser);
+router.post('/addUser', auth_1.default, group_1.addUser);
 exports.default = router;
