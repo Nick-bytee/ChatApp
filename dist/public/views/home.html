@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mchat</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/1.5.2/css/perfect-scrollbar.min.css"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <link rel="stylesheet" href="../public/css/home.css">
+</head>
+
+<body>
+  <div id="notification" class="hidden">
+    <p id="notificationMessage"></p>
+  </div>
+  <section style="background-color: darkgrey; display: flex !important;">
+    
+    <div class="container-fluid py-5 custom-container" style="display: flex !important; padding-left: 10% !important;">
+
+      <div class="p-3 contain" style="width: 25%; background-color: white;">
+        <div class="header" >
+          <h3 id="heading">Chats</h3>
+          <div class="dropdown">
+            <button class="btn no-caret menu-button" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fas fa-ellipsis-v"></i>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" id="createGroupButton" style="cursor: pointer;">Create New Group</a></li>
+              <li><a class="dropdown-item" id="joinGroupButton" style="cursor: pointer;">Join Group</a></li>
+            </ul>
+          </div>
+        </div>
+
+
+        <div id="chats">
+          <div class="input-group rounded mb-3" id="searchBox" style="display: none;">
+            <input type="search" id="searchBoxData" class="form-control rounded" placeholder="Enter email or phone"
+              aria-describedby="search-addon" />
+            <span class="input-group-text border-0" id="search-addon">
+              <a id="searchButton" style="cursor: pointer;"><i class="fas fa-search"></i></a>
+            </span>
+          </div>
+          <div data-mdb-perfect-scrollbar="true" style="position: relative; height: 400px">
+            <ul class="list-unstyled mb-0" id="chatList">
+            </ul>
+          </div>
+        </div>
+
+        <div class="container" id="createGroup">
+          <button class="cut-button" id="cut">
+            <i class="fa-solid fa-x" style="color: #000000;"></i>
+          </button>
+          <form class="text-center border border-light p-5" action="#!">
+
+            <p class="h4 mb-4">Create new group</p>
+            
+            <!-- Name -->
+            <input type="text" id="groupName" class="form-control mb-4" placeholder="Name">
+        
+        
+            <!-- Message -->
+            <div class="form-group">
+                <textarea class="form-control rounded-0" id="groupDescription" rows="3" placeholder="Description"></textarea>
+            </div>
+        
+            <!-- Send button -->
+            <button class="btn btn-info btn-block" id="create">Create</button>
+        
+        </form>
+        </div>
+
+        <div class="container" id="joinGroupForm" style="display: none;">
+          <form class="text-center border border-light p-5" action="#!">
+            <p class="h4 mb-4">Join Group</p>
+            <!-- Name -->
+            <input type="text" id="groupIdInput" class="form-control mb-4" placeholder="Enter Group ID">
+        
+            <!-- Join button -->
+            <button class="btn btn-info btn-block" id="join">Join</button>
+            <button class="btn btn-danger btn-block" id="cancel">Cancel</button>
+            <h5 id="groupJoinMessage"></h5>
+        
+        </form>
+        </div>
+      </div>
+
+      <div class="row d-flex flex-fill">
+
+
+        <div class="col-md-10 col-lg-18 col-xl-25" id="defaultImage">
+          <img src="../public/images/home.jpg" alt="">
+        </div>
+
+        
+        <div class="col-md-10 col-lg-18 col-xl-25" id="groupbox" style="display: none;">
+
+          <!-- Navbar -->
+          <nav class="navbar navbar-expand-lg navbar-light bg-gradient">
+            <!-- Container wrapper -->
+            <div class="container-fluid">
+              <!-- Toggle button -->
+              <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
+                data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+              </button>
+
+              <!-- Collapsible wrapper -->
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <!-- Navbar brand -->
+                <a class="navbar-brand mt-2 mt-lg-0" id="groupSelect" style="display: flex !important; cursor: pointer;">
+                  <img class="group-icon" src="../public/images/groupIcon.jpg" height="15" alt="MDB Logo" loading="lazy">
+                  <div class="groupInfo">
+                    <h5 style="margin: 0;" id="groupHeading"></h5>
+                    <p style="margin: 0;" id="usersInfo"></p>
+                  </div>
+                </a>
+              </div>
+              <!-- Collapsible wrapper -->
+              <!-- Right elements -->
+              <div class="d-flex align-items-center">
+                <!-- Icon -->
+                <a class="link-secondary me-3" href="#">
+                  <input type="text" class="search-click" name="" placeholder="search here...">
+                  <i class="fas fa-search"></i>
+                </a>
+              </div>
+            </div>
+
+          </nav>
+
+
+          <div class="card custom-card" id="chat2">
+            <div class="card-header d-flex justify-content-between align-items-center p-3 custom-card-header">
+              <!-- <button type="button" class="btn btn-primary btn-sm" data-mdb-ripple-color="dark">Let's Chat
+                                App</button> -->
+            </div>
+
+
+            <!-- group info -->
+            <div class="groupInfo" id="groupInfo" style="display: none;">
+              <div class="d-flex flex-row justify-content-center" id="createGroup" style="display: block !important;">
+                <button class="cut-button" id="close">
+                  <i class="fa-solid fa-x" style="color: #000000;"></i>
+                </button>
+                <form class="text-center border border-light p-5">
+      
+                  <img class="group-icon" src="../images/groupIcon.jpg" height="15" alt="MDB Logo" loading="lazy">
+                   <p id="membersCount"> 100 Members</p>
+                  <!-- Name -->
+                  <input type="text" id="groupName2" class="form-control mb-4" placeholder="Name" disabled style="border-color: black;">
+                  <!-- Description -->
+                  <div class="form-group">
+                      <textarea class="form-control rounded-0" id="groupDescription2" rows="3" placeholder="Description" disabled style="border-color: black;"></textarea>
+                  </div>
+              
+                  <!-- Send button -->
+                  <button class="btn btn-primary" id="edit">Edit</button>
+                  <button class="btn btn-success btn-block" id="invite">Invite</button>
+                  <input type="text" id="groupID" class="form-control mb-4" disabled value="GG" style="display: none;">
+                  <h5 id="errMessage"></h5>
+                  <h4 id="heading2" style="display: none;">Share this ID to invite</h4>
+              </form>
+              
+              <div id="membersOption" style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                <button class="btn btn-primary" id="addUserButton" style="display: none; font-size: smaller;">Add Users</button>
+                <h3 style="justify-content: center; display: flex;">Members</h3>
+                <button class="btn btn-danger" id="removeUserButton" style="display: none; font-size: smaller;">Manage</button>
+              </div>
+              
+
+              <!-- table -->
+              <div class="table-wrapper-scroll-y my-custom-scrollbar">
+
+                <table class="table table-bordered table-striped mb-0" id="groupMembersTable">
+                  <thead>
+                    <tr>
+                      <th scope="col">Name</th>
+                    </tr>
+                  </thead>
+                </table>
+              
+              </div>
+
+              </div>
+            </div>
+
+            <!-- Chatbox -->
+            <div class="card-body" data-mdb-perfect-scrollbar="true" style="position: relative; height: 400px"
+              id="chatBox">
+              <div class="d-flex flex-row justify-content-start" id="other">
+                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp" alt="avatar 1"
+                  style="width: 45px; height: 100%;">
+                <div id="message1">
+                  <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">Hi</p>
+                  <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">How are
+                    you ...???
+                  </p>
+                  <p class="small ms-3 mb-3 rounded-3 text-muted">23:58</p>
+                </div>
+              </div>
+
+              <div class="d-flex flex-row justify-content-end" id="self">
+                <div>
+                  <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">I am Good
+                  </p>
+                  <p class="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">00:15</p>
+                </div>
+                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava4-bg.webp" alt="avatar 1"
+                  style="width: 45px; height: 100%;">
+              </div>
+            </div>
+
+            <!-- messgaeBox -->
+            <div id="messageBox" class="card-footer text-muted d-flex justify-content-start align-items-center p-3">
+              <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp" alt="avatar 3"
+                style="width: 40px; height: 100%;">
+              <input type="text" class="form-control form-control-lg" id="message" placeholder="Type message">
+              <a class="text-muted" href="#!"><i class="fas fa-paperclip fa-lg"></i></a>
+              <!-- <a class="ms-3 text-muted" href="#!"><i class="fas fa-smile"></i></a> -->
+              <a class="ms-3" id="send"><i class="fas fa-paper-plane fa-lg"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/1.5.2/perfect-scrollbar.min.js">
+  </script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </script>
+  <script type="module" src="../../dom/home.js"></script>
+  <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+</body>
+
+</html>
