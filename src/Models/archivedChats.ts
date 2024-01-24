@@ -1,4 +1,5 @@
 import { Model, Optional, DataTypes } from "sequelize";
+import Sequelize from "sequelize";
 import sequelize from "../utils/database";
 
 interface ArchivedChatsAttributes {
@@ -30,16 +31,16 @@ ArchivedChats.init(
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
-      type: DataTypes.UUID,
+      type: Sequelize.INTEGER,
       unique: true,
     },
     message: {
       allowNull: true,
-      type: DataTypes.TEXT,
+      type: Sequelize.STRING,
     },
     message_type: {
       allowNull: true,
-      type: DataTypes.TEXT,
+      type: Sequelize.STRING,
     },
   },
   { sequelize, modelName: "ArchivedMessages" }
