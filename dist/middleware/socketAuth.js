@@ -18,7 +18,7 @@ const User_1 = __importDefault(require("../Models/User"));
 const socketAuthenticate = (socket) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const token = socket.handshake.query.token;
-        console.log(token);
+        // console.log(token);
         if (!token) {
             throw new Error("Authentication Failed, Token Missing");
         }

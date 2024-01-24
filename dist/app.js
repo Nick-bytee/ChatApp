@@ -11,6 +11,10 @@ const path_1 = __importDefault(require("path"));
 const socket_io_1 = require("socket.io");
 const http_1 = __importDefault(require("http"));
 const sockets_1 = require("./sockets/sockets");
+const cron_1 = require("cron");
+const dotenv_1 = __importDefault(require("dotenv"));
+const chronJob_1 = require("./utils/chronJob");
+dotenv_1.default.config();
 const app = (0, express_1.default)();
 const server = http_1.default.createServer(app);
 const Port = 3000;
@@ -18,12 +22,17 @@ const User_1 = __importDefault(require("./Models/User"));
 const chat_1 = __importDefault(require("./Models/chat"));
 const group_1 = __importDefault(require("./Models/group"));
 const usergroup_1 = __importDefault(require("./Models/usergroup"));
+const archivedChats_1 = __importDefault(require("./Models/archivedChats"));
 chat_1.default.belongsTo(User_1.default);
 User_1.default.hasMany(chat_1.default);
 User_1.default.belongsToMany(group_1.default, { through: usergroup_1.default });
 group_1.default.belongsToMany(User_1.default, { through: usergroup_1.default });
 group_1.default.hasMany(chat_1.default, { foreignKey: "groupId" });
 chat_1.default.belongsTo(group_1.default, { foreignKey: "groupId" });
+User_1.default.hasMany(archivedChats_1.default);
+archivedChats_1.default.belongsTo(User_1.default);
+group_1.default.hasMany(archivedChats_1.default);
+archivedChats_1.default.belongsTo(User_1.default);
 //routes
 const user_1 = __importDefault(require("./routes/user"));
 const chat_2 = __importDefault(require("./routes/chat"));
@@ -38,6 +47,7 @@ app.use("/", (req, res) => {
     const filePath = path_1.default.join(__dirname, `/${req.url}`);
     res.sendFile(filePath);
 });
+// console.log(process.env.BOX_CLIENT_ID);
 const io = new socket_io_1.Server(server, {
     cors: {
         methods: ["GET", "POST", "PUT", "DELETE"],
@@ -45,10 +55,11 @@ const io = new socket_io_1.Server(server, {
 });
 (0, sockets_1.socketEvents)(io);
 database_1.default
-    .sync()
+    .sync({ force: false })
     .then(() => {
     server.listen(Port, () => {
         console.log(`Server is Running on ${Port}`);
     });
 })
     .catch((err) => console.log(err));
+const job = new cron_1.CronJob("59 59 23 * * *", chronJob_1.archiveChats, null, true, "IST");

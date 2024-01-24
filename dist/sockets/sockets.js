@@ -14,14 +14,25 @@ const chat_1 = require("../controllers/chat");
 const socketAuth_1 = require("../middleware/socketAuth");
 const socketEvents = (io) => {
     io.on("connection", (socket) => __awaiter(void 0, void 0, void 0, function* () {
+        console.log("user connected");
         try {
             const user = yield (0, socketAuth_1.socketAuthenticate)(socket);
+            socket.on("disconnect", () => {
+                console.log("user disconnected");
+            });
             socket.on("sendMessage", (message) => __awaiter(void 0, void 0, void 0, function* () {
                 const chat = yield (0, chat_1.storeChat)(message, user);
                 message.username = user.name;
                 const updatedAt = new Date(chat.createdAt);
                 message.time = `${updatedAt.getHours()}:${updatedAt.getMinutes()}`;
                 io.emit("newMessage", message);
+            }));
+            socket.on("sendFile", (obj) => __awaiter(void 0, void 0, void 0, function* () {
+                const chat = yield (0, chat_1.storeFile)(obj, user);
+                obj.username = user.name;
+                const updatedAt = new Date(chat.createdAt);
+                obj.time = `${updatedAt.getHours()}:${updatedAt.getMinutes()}`;
+                io.emit("newMessage", obj);
             }));
         }
         catch (err) {

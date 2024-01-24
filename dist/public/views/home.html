@@ -151,7 +151,7 @@
                 </button>
                 <form class="text-center border border-light p-5">
       
-                  <img class="group-icon" src="../images/groupIcon.jpg" height="15" alt="MDB Logo" loading="lazy">
+                  <img class="group-icon" src="../public/images/groupIcon.jpg" height="15" alt="MDB Logo" loading="lazy">
                    <p id="membersCount"> 100 Members</p>
                   <!-- Name -->
                   <input type="text" id="groupName2" class="form-control mb-4" placeholder="Name" disabled style="border-color: black;">
@@ -195,25 +195,25 @@
             <div class="card-body" data-mdb-perfect-scrollbar="true" style="position: relative; height: 400px"
               id="chatBox">
               <div class="d-flex flex-row justify-content-start" id="other">
-                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp" alt="avatar 1"
+                <!-- <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp" alt="avatar 1"
                   style="width: 45px; height: 100%;">
                 <div id="message1">
                   <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">Hi</p>
                   <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">How are
                     you ...???
                   </p>
-                  <p class="small ms-3 mb-3 rounded-3 text-muted">23:58</p>
+                  <p class="small ms-3 mb-3 rounded-3 text-muted">23:58</p> -->
                 </div>
               </div>
 
               <div class="d-flex flex-row justify-content-end" id="self">
                 <div>
-                  <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">I am Good
+                  <!-- <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">I am Good
                   </p>
                   <p class="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">00:15</p>
                 </div>
                 <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava4-bg.webp" alt="avatar 1"
-                  style="width: 45px; height: 100%;">
+                  style="width: 45px; height: 100%;"> -->
               </div>
             </div>
 
@@ -222,7 +222,12 @@
               <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp" alt="avatar 3"
                 style="width: 40px; height: 100%;">
               <input type="text" class="form-control form-control-lg" id="message" placeholder="Type message">
-              <a class="text-muted" href="#!"><i class="fas fa-paperclip fa-lg"></i></a>
+              <input type="file" accept=".pdf, .jpg, .jpeg, .png, .pdf, .zip, .docx, .rar" id="fileInput" style="display: none;">
+
+              <!-- Label associated with the file input -->
+              <label for="fileInput" class="text-muted" style="cursor:pointer">
+                <i class="fas fa-paperclip fa-lg"></i>
+              </label>
               <!-- <a class="ms-3 text-muted" href="#!"><i class="fas fa-smile"></i></a> -->
               <a class="ms-3" id="send"><i class="fas fa-paper-plane fa-lg"></i></a>
             </div>

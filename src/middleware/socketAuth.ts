@@ -5,7 +5,7 @@ import User from "../Models/User";
 export const socketAuthenticate = async (socket: Socket) => {
   try {
     const token = socket.handshake.query.token as string;
-    console.log(token);
+    // console.log(token);
     if (!token) {
       throw new Error("Authentication Failed, Token Missing");
     }

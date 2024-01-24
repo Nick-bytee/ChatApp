@@ -6,7 +6,11 @@ import path from "path";
 import { Server } from "socket.io";
 import http from "http";
 import { socketEvents } from "./sockets/sockets";
+import { CronJob } from "cron";
+import dotenv from "dotenv";
+import { archiveChats } from "./utils/chronJob";
 
+dotenv.config();
 const app = express();
 const server = http.createServer(app);
 const Port = 3000;
@@ -15,6 +19,7 @@ import User from "./Models/User";
 import Chat from "./Models/chat";
 import Group from "./Models/group";
 import userGroup from "./Models/usergroup";
+import ArchivedChats from "./Models/archivedChats";
 
 Chat.belongsTo(User);
 User.hasMany(Chat);
@@ -24,6 +29,12 @@ Group.belongsToMany(User, { through: userGroup });
 
 Group.hasMany(Chat, { foreignKey: "groupId" });
 Chat.belongsTo(Group, { foreignKey: "groupId" });
+
+User.hasMany(ArchivedChats);
+ArchivedChats.belongsTo(User);
+
+Group.hasMany(ArchivedChats);
+ArchivedChats.belongsTo(User);
 
 //routes
 import userRoutes from "./routes/user";
@@ -42,7 +53,7 @@ app.use("/", (req, res) => {
   const filePath = path.join(__dirname, `/${req.url}`);
   res.sendFile(filePath);
 });
-
+// console.log(process.env.BOX_CLIENT_ID);
 const io = new Server(server, {
   cors: {
     methods: ["GET", "POST", "PUT", "DELETE"],
@@ -52,10 +63,12 @@ const io = new Server(server, {
 socketEvents(io);
 
 sequelize
-  .sync()
+  .sync({ force: false })
   .then(() => {
     server.listen(Port, () => {
       console.log(`Server is Running on ${Port}`);
     });
   })
   .catch((err) => console.log(err));
+
+const job = new CronJob("59 59 23 * * *", archiveChats, null, true, "IST");

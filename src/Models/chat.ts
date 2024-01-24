@@ -1,14 +1,41 @@
-import Sequelize  from "sequelize";
+import Sequelize, { Model, Optional } from "sequelize";
 import sequelize from "../utils/database";
 
-const Chat = sequelize.define('chats', {
-    id : {
-        type : Sequelize.INTEGER,
-        allowNull : false,
-        primaryKey : true,
-        autoIncrement  : true
-    },
-    message : Sequelize.STRING
-})
+interface ChatsAttributes {
+  id: number;
+  message: string;
+  messageType: string;
+  groupId: number;
+  userId: number;
+}
 
-export default Chat
+interface ChatsCreationAttributes extends Optional<ChatsAttributes, "id"> {}
+
+class Chats
+  extends Model<ChatsAttributes, ChatsCreationAttributes>
+  implements ChatsAttributes
+{
+  public id!: number;
+  public message!: string;
+  public messageType!: string;
+  groupId!: number;
+  userId!: number;
+}
+
+Chats.init(
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    message: Sequelize.STRING,
+    messageType: Sequelize.STRING,
+    groupId: Sequelize.INTEGER,
+    userId: Sequelize.INTEGER,
+  },
+  { sequelize, modelName: "chats" }
+);
+
+export default Chats;

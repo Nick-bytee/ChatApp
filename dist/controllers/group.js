@@ -28,7 +28,9 @@ const createGroup = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             uuid: uuid,
         });
         yield user.addGroup(group);
-        const usergroup = yield usergroup_1.default.findOne({ where: { userId: user.id, groupId: group.id } });
+        const usergroup = yield usergroup_1.default.findOne({
+            where: { userId: user.id, groupId: group.id },
+        });
         if (usergroup) {
             yield usergroup.update({ isAdmin: true });
         }
@@ -90,6 +92,7 @@ const getGroupChat = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             username: chat["user.name"],
             time: `${new Date(chat.createdAt).getHours()}:${new Date(chat.createdAt).getMinutes()}`,
             isCurrentUser: chat.userId === currentUser.id,
+            messageType: chat.messageType,
         }));
         res.status(200).json({ users: users, chats: allChats, group: group });
     }
@@ -111,15 +114,15 @@ const getGroupInfo = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             res.status(200).json("Err Occured");
             return;
         }
-        const users = yield group.getUsers({
+        const users = (yield group.getUsers({
             attributes: ["id", "name", "createdAt"],
             raw: true,
-        });
+        }));
         const userData = users.map((user) => ({
             id: user.id,
             name: user.name,
             isCurrentUser: req.user.id === user.id,
-            isAdmin: user["userGroup.isAdmin"]
+            isAdmin: user["userGroup.isAdmin"],
         }));
         res.status(200).json({ group, userData });
     }
@@ -137,13 +140,15 @@ const createAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 uuid: uuid,
             },
         });
-        const usergroup = yield usergroup_1.default.findOne({ where: { userId: userId, groupId: group.id } });
+        const usergroup = yield usergroup_1.default.findOne({
+            where: { userId: userId, groupId: group.id },
+        });
         if (usergroup) {
             yield usergroup.update({ isAdmin: true });
             res.status(200).json({ success: true });
         }
         else {
-            throw new Error('Internal Server Error');
+            throw new Error("Internal Server Error");
         }
     }
     catch (err) {
@@ -158,21 +163,21 @@ const removeUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     try {
         const group = yield group_1.default.findOne({
             where: {
-                uuid: uuid
-            }
+                uuid: uuid,
+            },
         });
         if (group) {
         }
         const user = yield User_1.default.findOne({
             where: {
-                id: userId
-            }
+                id: userId,
+            },
         });
         if (user && group) {
             // @ts-ignore
             user.removeGroup(group);
         }
-        res.status(200).json({ message: 'success' });
+        res.status(200).json({ message: "success" });
     }
     catch (err) {
         console.log(err);
@@ -185,20 +190,20 @@ const searchUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     try {
         const user = yield User_1.default.findOne({
             where: {
-                email: email
-            }
+                email: email,
+            },
         });
         if (user) {
             const userData = {
                 name: user.dataValues.name,
-                email: user.dataValues.email
+                email: user.dataValues.email,
             };
             // @ts-ignore
             // await user.addGroup(group)
             res.status(200).json({ data: user });
         }
         else {
-            throw new Error('User Not Found!');
+            throw new Error("User Not Found!");
         }
     }
     catch (err) {
@@ -213,23 +218,23 @@ const addUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const group = yield group_1.default.findOne({
             where: {
-                uuid: uuid
-            }
+                uuid: uuid,
+            },
         });
         const user = yield User_1.default.findOne({
             where: {
-                email: email
-            }
+                email: email,
+            },
         });
         if (user) {
             //@ts-ignore
             yield user.addGroup(group);
-            res.status(200).json({ message: 'success' });
+            res.status(200).json({ message: "success" });
         }
     }
     catch (err) {
         console.log(err);
-        res.status(500).json({ message: 'Internal Server Error' });
+        res.status(500).json({ message: "Internal Server Error" });
     }
 });
 exports.addUser = addUser;
@@ -237,17 +242,17 @@ const updateGroupInfo = (req, res) => __awaiter(void 0, void 0, void 0, function
     try {
         yield group_1.default.update({
             name: req.body.name,
-            description: req.body.description
+            description: req.body.description,
         }, {
             where: {
-                uuid: req.body.uuid
-            }
+                uuid: req.body.uuid,
+            },
         });
-        res.status(200).json({ message: 'success' });
+        res.status(200).json({ message: "success" });
     }
     catch (err) {
         console.log(err);
-        res.status(500).json({ message: 'Internal Server Error' });
+        res.status(500).json({ message: "Internal Server Error" });
     }
 });
 exports.updateGroupInfo = updateGroupInfo;
@@ -256,20 +261,20 @@ const joinGroup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const group = yield group_1.default.findOne({
             where: {
-                uuid: req.body.uuid
-            }
+                uuid: req.body.uuid,
+            },
         });
         if (group) {
             const userGroup = yield user.addGroup(group);
             if (userGroup) {
-                res.status(200).json({ message: 'Group Joined' });
+                res.status(200).json({ message: "Group Joined" });
             }
             else {
-                throw new Error('Already in the Group');
+                throw new Error("Already in the Group");
             }
         }
         else {
-            res.status(500).json({ message: 'Group Not Found' });
+            res.status(500).json({ message: "Group Not Found" });
         }
     }
     catch (err) {

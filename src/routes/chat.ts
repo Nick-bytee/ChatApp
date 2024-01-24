@@ -1,11 +1,9 @@
 import { Router } from "express";
-const router = Router()
+const router = Router();
 
 import { getAllChat } from "../controllers/chat";
-import { storeChat } from "../controllers/chat";
 import authenticate from "../middleware/auth";
 
-router.get('/home', authenticate ,getAllChat)
-router.post('/sendChat', authenticate ,storeChat)
+router.get("/home", authenticate, getAllChat);
 
-export default router
+export default router;

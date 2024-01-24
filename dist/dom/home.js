@@ -8,7 +8,7 @@ const backendAPI = "http://localhost:3000";
 // import io from "socket.io-client";
 
 var selectedGroupID;
-console.log("working");
+// console.log("working");
 
 window.addEventListener("DOMContentLoaded", getAllGroups);
 
@@ -55,7 +55,8 @@ async function getAllChats() {
         Authenticate: token,
       },
     });
-    console.log(result.data.chat);
+    console.log(result.data.chats);
+    // console.log(result.data.chat);
     return storeChats(result.data.chats);
 
     // createChats(result.data.chats)
@@ -216,7 +217,7 @@ async function searchUsers() {
     const response = await axios.post(`${backendAPI}/group/searchUser`, myObj, {
       headers: { Authenticate: token },
     });
-    console.log(response);
+    // console.log(response);
     showUser(response.data.data);
   } catch (err) {
     console.log(err);
@@ -343,7 +344,7 @@ function manageUsers() {
       } else {
         td[j].appendChild(normalDiv);
         normalDiv.appendChild(button2);
-        console.log(normalDiv);
+        // console.log(normalDiv);
       }
     }
   }
@@ -459,13 +460,15 @@ async function getGroupChats(id) {
     );
     createGroupInfo(response.data.group);
     createChats(response.data.chats);
-    console.log(response.data.chats);
+    // console.log(response.data.chats);
     defaultchatbox.style.display = "none";
     chatbox.style.display = "block";
   } catch (err) {
     console.log(err);
   }
 }
+
+const fileInputButton = document.getElementById("fileInput");
 
 async function getNewChats(latestChat) {
   id = latestChat.id;
@@ -522,6 +525,7 @@ function createChats(chats) {
   if (chats.length > 1) {
     chatBox.innerHTML = "";
   }
+  var dataTypes = ["img", "svg", "png", "svg", "avif", "jpg"];
   chats.forEach((data) => {
     if (!data.isCurrentUser) {
       const otherUser = document.createElement("div");
@@ -540,7 +544,15 @@ function createChats(chats) {
       const message = document.createElement("p");
       message.className = "small p-2 me-3 rounded-3";
       message.style.backgroundColor = "#f5f6f7";
-      message.innerHTML = data.message;
+      console.log(data);
+      if (dataTypes.includes(data.messageType)) {
+        const img = document.createElement("img");
+        img.style.width = "200px";
+        img.src = data.message;
+        message.appendChild(img);
+      } else {
+        message.innerHTML = data.message;
+      }
       message.appendChild(name);
       const time = document.createElement("p");
       time.className = "small ms-3 mb-3 rounded-3 text-muted";
@@ -566,7 +578,15 @@ function createChats(chats) {
       const message = document.createElement("p");
       message.className = "small p-2 me-3 mb-1 text-white rounded-3 bg-primary";
       message.style.backgroundColor = "#f5f6f7";
-      message.innerHTML = data.message;
+      console.log(data);
+      if (dataTypes.includes(data.messageType)) {
+        const img = document.createElement("img");
+        img.src = data.message;
+        img.style.width = "200px";
+        message.appendChild(img);
+      } else {
+        message.innerHTML = data.message;
+      }
       message.appendChild(name);
       const time = document.createElement("p");
       time.className =
@@ -584,6 +604,52 @@ function createChats(chats) {
 
 const sendButton = document.getElementById("send");
 sendButton.addEventListener("click", sendMessage);
+
+const fileInput = document.getElementById("fileInput");
+fileInput.addEventListener("change", sendFile);
+
+async function sendFile(e) {
+  e.preventDefault();
+  const token = localStorage.getItem("token");
+  if (selectedGroupID) {
+    if (token) {
+      const fileInput = document.getElementById("fileInput");
+      const file = fileInput.files[0];
+      const fileName = fileInput.value.split("\\");
+      const fileExtension = fileName[fileName.length - 1].split(".");
+      if (file.length > 0) {
+        const maxSizeInBytes = 5 * 1024 * 1024;
+        const fileSize = selectedFiles[0].size;
+
+        if (fileSize > maxSizeInBytes) {
+          alert(
+            "File size exceeds the allowed limit. Please select a smaller file."
+          );
+          fileInput.value = "";
+          return;
+        }
+      }
+      let obj = {
+        file: file,
+        id: selectedGroupID,
+        token: token,
+        messageType: fileExtension[fileExtension.length - 1],
+        fileName: fileName[fileName.length - 1],
+      };
+      console.log(obj);
+      // console.log(obj);
+      try {
+        socket.emit("sendFile", obj);
+        getAllGroups();
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      window.alert("Unauthorised");
+    }
+  }
+}
+
 async function sendMessage(e) {
   e.preventDefault();
   const token = localStorage.getItem("token");
@@ -591,10 +657,11 @@ async function sendMessage(e) {
     if (token) {
       const message = document.getElementById("message").value;
       document.getElementById("message").value = "";
-      const obj = {
+      let obj = {
         message: message,
         id: selectedGroupID,
         token: token,
+        messageType: "msg",
       };
       try {
         socket.emit("sendMessage", obj);
@@ -649,7 +716,7 @@ async function createGroup(e) {
         Authenticate: token,
       },
     });
-    console.log(response);
+    // console.log(response);
   } catch (Err) {
     console.log(Err);
   }
@@ -678,7 +745,7 @@ joinGroupButton2.addEventListener("click", async () => {
         Authenticate: token,
       },
     });
-    console.log(response);
+    // console.log(response);
   } catch (err) {
     console.log(err);
   }
@@ -708,7 +775,7 @@ joinButton.addEventListener("click", async () => {
     });
     groupJoinMessage.innerHTML = response.data.message;
     groupJoinMessage.style.color = "green";
-    console.log(response);
+    // console.log(response);
   } catch (err) {
     console.log(err);
     groupJoinMessage.innerHTML = err.response.data.message;
