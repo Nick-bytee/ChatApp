@@ -4,6 +4,7 @@
   "description": "Basic ChatApp",
   "main": "app.js",
   "scripts": {
+    "test": "npm dist/test.js",
     "start": "nodemon dist/app.js"
   },
   "author": "Nick",
