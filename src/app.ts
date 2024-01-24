@@ -71,4 +71,4 @@ sequelize
   })
   .catch((err) => console.log(err));
 
-const job = new CronJob("59 59 23 * * *", archiveChats, null, true, "IST");
+const job = new CronJob("59 59 23 * * *", archiveChats, null, true, "UTC");

@@ -28,11 +28,14 @@ const socketEvents = (io) => {
                 io.emit("newMessage", message);
             }));
             socket.on("sendFile", (obj) => __awaiter(void 0, void 0, void 0, function* () {
+                console.log("working socket function");
                 const chat = yield (0, chat_1.storeFile)(obj, user);
                 obj.username = user.name;
                 const updatedAt = new Date(chat.createdAt);
                 obj.time = `${updatedAt.getHours()}:${updatedAt.getMinutes()}`;
-                io.emit("newMessage", obj);
+                obj.message = chat.message;
+                console.log(chat);
+                return io.emit("newMessage", obj);
             }));
         }
         catch (err) {

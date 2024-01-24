@@ -88,6 +88,7 @@ export const storeFile = async (obj: any, socketUser: any) => {
   const uuid = obj.id;
   const user = socketUser;
   const fileUrl = await uploadFileToAzure(file, obj.fileName);
+  console.log(fileUrl);
   try {
     const group = await Group.findOne({
       where: {

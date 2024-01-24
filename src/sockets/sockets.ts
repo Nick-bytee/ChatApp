@@ -21,11 +21,14 @@ export const socketEvents = (io: Server) => {
       });
 
       socket.on("sendFile", async (obj) => {
+        console.log("working socket function");
         const chat: any = await storeFile(obj, user);
         obj.username = user.name;
         const updatedAt = new Date(chat.createdAt);
         obj.time = `${updatedAt.getHours()}:${updatedAt.getMinutes()}`;
-        io.emit("newMessage", obj);
+        obj.message = chat.message;
+        console.log(chat);
+        return io.emit("newMessage", obj);
       });
     } catch (err) {
       console.log(err);

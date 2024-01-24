@@ -14,6 +14,7 @@ const sockets_1 = require("./sockets/sockets");
 const cron_1 = require("cron");
 const dotenv_1 = __importDefault(require("dotenv"));
 const chronJob_1 = require("./utils/chronJob");
+const admin_ui_1 = require("@socket.io/admin-ui");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const server = http_1.default.createServer(app);
@@ -53,6 +54,13 @@ const io = new socket_io_1.Server(server, {
         methods: ["GET", "POST", "PUT", "DELETE"],
     },
 });
+(0, admin_ui_1.instrument)(io, {
+    auth: {
+        type: "basic",
+        username: "admin",
+        password: "password",
+    },
+});
 (0, sockets_1.socketEvents)(io);
 database_1.default
     .sync({ force: false })
@@ -62,4 +70,4 @@ database_1.default
     });
 })
     .catch((err) => console.log(err));
-const job = new cron_1.CronJob("59 59 23 * * *", chronJob_1.archiveChats, null, true, "IST");
+const job = new cron_1.CronJob("59 59 23 * * *", chronJob_1.archiveChats, null, true, "UTC");

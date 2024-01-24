@@ -91,6 +91,7 @@ const storeFile = (obj, socketUser) => __awaiter(void 0, void 0, void 0, functio
     const uuid = obj.id;
     const user = socketUser;
     const fileUrl = yield uploadFileToAzure(file, obj.fileName);
+    console.log(fileUrl);
     try {
         const group = yield group_1.default.findOne({
             where: {

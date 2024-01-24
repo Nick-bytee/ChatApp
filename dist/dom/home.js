@@ -636,10 +636,8 @@ async function sendFile(e) {
         messageType: fileExtension[fileExtension.length - 1],
         fileName: fileName[fileName.length - 1],
       };
-      console.log(obj);
-      // console.log(obj);
       try {
-        socket.emit("sendFile", obj);
+        await socket.emit("sendFile", obj);
         getAllGroups();
       } catch (err) {
         console.log(err);
